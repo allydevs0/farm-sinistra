@@ -1,0 +1,95 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ringtaa/castletpfast.github.io/refs/heads/main/FASTCASTLE.lua"))()
+-- Script para auto coletar bonds (sempre ativo)
+local bonds = {}
+local cons = {}
+local plr = game:GetService("Players").LocalPlayer
+
+-- Função simplificada para obter informações do objeto
+local function getInfo(object)
+    if not object or not object.Parent then return end
+    
+    local info = {}
+    for i,v in object:WaitForChild("ObjectInfo", 9e9):GetChildren() do
+        if v.Name ~= "Title" and v:IsA("TextLabel") then
+            table.insert(info, v.Text)
+        end
+    end
+    
+    return info
+end
+
+-- Função para verificar se um item é um bond
+local function hasProperty(object, prop)
+    if not object or not object:FindFirstChild("ObjectInfo") then return false end
+    
+    local info = getInfo(object)
+    
+    if not info then return false end
+    
+    for _,v in pairs(info) do
+        if v == prop then
+            return true
+        end
+    end
+    
+    return false
+end
+
+-- Função para adicionar à lista
+local function add(t,v)
+    if v == nil or typeof(t) ~= "table" then return end
+    local i = 1
+    while true do
+        if v == nil or typeof(v) == "Instance" and v.Parent == nil then
+            return -1
+        end
+        if t[i] == nil or typeof(t[i]) == "Instance" and t[i].Parent == nil then
+            t[i] = v
+            return i
+        end
+        i = i + 1
+    end
+end
+
+-- Função principal que verifica se objetos são bonds
+local function main(v)
+    task.wait()
+    
+    if v and v.Parent and v:IsA("BillboardGui") and v.Name == "ObjectInfo" then
+        if hasProperty(v.Parent, "Currency") then
+            return add(bonds, v.Parent)
+        end
+    elseif v and v.Parent == workspace.RuntimeItems and v.Name ~= "Moneybag" then
+        task.wait(0.01)
+        local obj = v:FindFirstChildWhichIsA("Instance")
+        if obj and hasProperty(obj.Parent, "Currency") then
+            return add(bonds, obj.Parent)
+        end
+    end
+end
+
+-- Escaneando objetos existentes
+for _,v in pairs(workspace:GetDescendants()) do
+    task.spawn(main, v)
+end
+
+-- Conectando ao workspace para detectar novos objetos
+cons[#cons+1] = workspace.DescendantAdded:Connect(main)
+
+-- Loop que coleta os bonds (sempre ativo)
+cons[#cons+1] = game:GetService("RunService").RenderStepped:Connect(function()
+    if plr and plr.Character then
+        for i,v in pairs(bonds) do
+            if v and v.Parent then
+                if (v:GetPivot().Position - plr.Character:GetPivot().Position).Magnitude <= 30 then
+                    game:GetService("ReplicatedStorage").Packages.RemotePromise.Remotes.C_ActivateObject:FireServer(v)
+                end
+            else
+                bonds[i] = nil
+            end
+        end
+    end
+end)
+
+-- Mensagem para confirmar que o script está ativo
+print("Auto-coletar bonds ativado permanentemente!")

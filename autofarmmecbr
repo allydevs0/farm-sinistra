@@ -1,0 +1,198 @@
+-- Decompiler will be improved VERY SOON!
+-- Decompiled with Konstant V2.1, a fast Luau decompiler made in Luau by plusgiant5 (https://discord.gg/wyButjTMhM)
+-- Decompiled on 2025-04-22 16:49:39
+-- Luau version 6, Types version 3
+-- Time taken: 0.004983 seconds
+
+local JobOffers = workspace.TransportJobWorkings.JobOffers
+local JobTemplate_upvr = script.JobTemplate
+local Beam_upvr = script.Beam
+local var12_upvw
+local var14_upvw = false
+local var15_upvw
+game:GetService("UserInputService").InputBegan:Connect(function(arg1, arg2) -- Line 10
+	--[[ Upvalues[2]:
+		[1]: var14_upvw (read and write)
+		[2]: var15_upvw (read and write)
+	]]
+	-- KONSTANTERROR: [0] 1. Error Block 1 start (CF ANALYSIS FAILED)
+	-- KONSTANTERROR: [0] 1. Error Block 1 end (CF ANALYSIS FAILED)
+	-- KONSTANTERROR: [6] 4. Error Block 2 start (CF ANALYSIS FAILED)
+	-- KONSTANTERROR: [6] 4. Error Block 2 end (CF ANALYSIS FAILED)
+	-- KONSTANTERROR: [44] 28. Error Block 15 start (CF ANALYSIS FAILED)
+	print("Passed2")
+	-- KONSTANTWARNING: Failed to evaluate expression, replaced with nil [48.6]
+	var15_upvw = nil
+	-- KONSTANTERROR: [44] 28. Error Block 15 end (CF ANALYSIS FAILED)
+	-- KONSTANTERROR: [79] 53. Error Block 12 start (CF ANALYSIS FAILED)
+	game.ReplicatedStorage.Events.PromptTransJob:FireServer(nil, "UnWeld", var15_upvw.Body.Check)
+	var14_upvw = false
+	-- KONSTANTERROR: [79] 53. Error Block 12 end (CF ANALYSIS FAILED)
+	-- KONSTANTERROR: [99] 66. Error Block 13 start (CF ANALYSIS FAILED)
+	-- KONSTANTERROR: [99] 66. Error Block 13 end (CF ANALYSIS FAILED)
+end)
+local function End_upvr() -- Line 38, Named "End"
+	--[[ Upvalues[2]:
+		[1]: var12_upvw (read and write)
+		[2]: Beam_upvr (readonly)
+	]]
+	game.ReplicatedStorage.Events.PromptTransJob:FireServer(nil, "End")
+	if var12_upvw then
+		for _, v in workspace.TransportJobWorkings.Destinations:WaitForChild(var12_upvw):GetDescendants() do
+			if v:IsA("Beam") then
+				v.Enabled = false
+			elseif v:IsA("PointLight") then
+				v.Enabled = false
+			elseif v:IsA("BillboardGui") then
+				v.Enabled = false
+			elseif v:IsA("Decal") then
+				v.Transparency = 1
+			end
+		end
+		script.Parent.Parent.OnJobText.Text = "Trabalho Completo"
+		Beam_upvr.Enabled = false
+		task.wait(3)
+		script.Parent.Parent.OnJobText.Visible = false
+		script.Parent.Parent.Tip.Visible = false
+	end
+end
+function Trigger() -- Line 62
+	--[[ Upvalues[1]:
+		[1]: End_upvr (readonly)
+	]]
+	task.wait(3)
+	if script.Parent.Parent.Working.Value == true then
+		if workspace.GrabStuff:GetChildren()[1] then
+			repeat
+				task.wait(0.5)
+			until script.Parent.Parent.BoxCount.Value <= 0
+			End_upvr()
+		else
+			End_upvr()
+			print("no parts detected")
+		end
+		task.wait(2)
+		if script.Parent.Parent.Working.Value ~= false then
+			-- KONSTANTWARNING: GOTO [16] #10
+		end
+	else
+		End_upvr()
+		print("player isnt working")
+	end
+end
+script.Parent.Parent.Working:GetPropertyChangedSignal("Value"):Connect(function() -- Line 84
+	Trigger()
+end)
+for _, v_2 in JobOffers:GetChildren() do
+	local clone = JobTemplate_upvr:Clone()
+	clone.Name = v_2.Name
+	clone.Destination.Text = v_2:WaitForChild("Destination").Value.Name
+	clone.Pay.Text = "ValorMaximo R$ "..v_2.Reward.Value
+	clone.PerBox.Text = "Por Caixa R$ "..string.format("%.02f", v_2.Reward.Value / v_2.BoxCount.Value)
+	clone.Load.Text = v_2:WaitForChild("Load").Value.." KG"
+	if v_2.HeavyTruck.Value == true then
+		clone.Mark.Check.Visible = true
+	else
+		clone.Mark.Cross.Visible = true
+	end
+	clone.Parent = script.Parent.Container.JobContainer
+end
+JobOffers.ChildAdded:Connect(function(arg1) -- Line 105
+	--[[ Upvalues[1]:
+		[1]: JobTemplate_upvr (readonly)
+	]]
+	local clone_2 = JobTemplate_upvr:Clone()
+	clone_2.Name = arg1.Name
+	clone_2.Destination.Text = arg1:WaitForChild("Destination").Value.Name
+	clone_2.Pay.Text = "ValorMaximo R$ "..arg1.Reward.Value
+	clone_2.PerBox.Text = "Por Caixa R$ "..string.format("%.02f", arg1.Reward.Value / arg1.BoxCount.Value)
+	clone_2.Load.Text = arg1:WaitForChild("Load").Value.." KG"
+	if arg1.HeavyTruck.Value == true then
+		clone_2.Mark.Check.Visible = true
+	else
+		clone_2.Mark.Cross.Visible = true
+	end
+	clone_2.Parent = script.Parent.Container.JobContainer
+end)
+JobOffers.ChildRemoved:Connect(function(arg1) -- Line 122
+	script.Parent.Container.JobContainer:WaitForChild(arg1.Name):Destroy()
+end)
+for _, v_3_upvr in script.Parent.Container.JobContainer:GetDescendants() do
+	if v_3_upvr:IsA("TextButton") then
+		v_3_upvr.Activated:Connect(function() -- Line 128
+			--[[ Upvalues[1]:
+				[1]: v_3_upvr (readonly)
+			]]
+			game.ReplicatedStorage.Events.PromptTransJob:FireServer(v_3_upvr.Parent.Name)
+			script.Parent.Visible = false
+		end)
+	end
+end
+for _, v_4 in script.Parent.Container.JobContainer:GetChildren() do
+	for _, v_5_upvr in v_4:GetChildren() do
+		if v_5_upvr:IsA("TextButton") then
+			v_5_upvr.Activated:Connect(function() -- Line 139
+				--[[ Upvalues[1]:
+					[1]: v_5_upvr (readonly)
+				]]
+				game.ReplicatedStorage.Events.PromptTransJob:FireServer(v_5_upvr.Parent.Name, "Start")
+				script.Parent.Visible = false
+			end)
+		end
+	end
+end
+script.Parent.Container.JobContainer.ChildAdded:Connect(function(arg1) -- Line 147
+	for _, v_6_upvr in arg1:GetChildren() do
+		if v_6_upvr:IsA("TextButton") then
+			v_6_upvr.Activated:Connect(function() -- Line 150
+				--[[ Upvalues[1]:
+					[1]: v_6_upvr (readonly)
+				]]
+				game.ReplicatedStorage.Events.PromptTransJob:FireServer(v_6_upvr.Parent.Name, "Start")
+				script.Parent.Visible = false
+			end)
+		end
+	end
+end)
+game.ReplicatedStorage.Events.PromptTransJob.OnClientEvent:Connect(function(arg1, arg2) -- Line 159
+	--[[ Upvalues[2]:
+		[1]: var12_upvw (read and write)
+		[2]: Beam_upvr (readonly)
+	]]
+	if arg1 and arg2 == "Started" then
+		local SOME = workspace.TransportJobWorkings.Destinations:WaitForChild(arg1)
+		var12_upvw = arg1
+		for _, v_7 in SOME:GetDescendants() do
+			if v_7:IsA("Beam") then
+				v_7.Enabled = true
+			elseif v_7:IsA("PointLight") then
+				v_7.Enabled = true
+			elseif v_7:IsA("BillboardGui") then
+				v_7.Enabled = true
+			elseif v_7:IsA("Decal") then
+				v_7.Transparency = 0.75
+			end
+		end
+		local Attachment = Instance.new("Attachment")
+		Beam_upvr.Attachment1 = Attachment
+		Attachment.Parent = game.Players.LocalPlayer.Character.Torso
+		local Attachment_2 = Instance.new("Attachment")
+		Beam_upvr.Attachment0 = Attachment_2
+		Attachment_2.Parent = SOME.DropArea
+		Beam_upvr.Enabled = true
+		Beam_upvr.Parent = workspace
+		script.Parent.Parent.OnJobText.Visible = true
+		script.Parent.Parent.OnJobText.Text = "Entregue as Caixas em: "..SOME.Name
+		script.Parent.Parent.Tip.Visible = true
+		return
+	end
+end)
+script.Parent.Container.TextButton.Activated:Connect(function() -- Line 194
+	script.Parent.Visible = false
+end)
+workspace.TransportJobWorkings.JobPromptPart.ProximityPrompt.Triggered:Connect(function(arg1) -- Line 198
+	if arg1.PlayerGui.TransportJobGui.Working.Value == false then
+		arg1.PlayerGui.TransportJobGui.MainGUI.Visible = true
+		return
+	end
+end)
